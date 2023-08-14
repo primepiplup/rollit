@@ -8,13 +8,22 @@ fn main() {
     let args: Vec<String> = args().collect();
     let arg_count = args.len();
 
+    if arg_count <= 1 {
+        println!("Usage:");
+        println!("rollit [filename]");
+    }
+
     if arg_count > 1 {
-        let filename: &String = &args[1];
-        let mut filepath = home_dir().expect("No home directory found.");
-        filepath.push(".local/share/rollit/");
-        filepath.push(filename);
+        let filepath = compose_filepath(&args[1]);
         display_random_line_from_file(filepath);
     }
+}
+
+fn compose_filepath(filename: &String) -> PathBuf {
+    let mut filepath = home_dir().expect("No home directory found.");
+    filepath.push(".local/share/rollit/");
+    filepath.push(filename);
+    return filepath;
 }
 
 fn display_random_line_from_file(filepath: PathBuf) {
