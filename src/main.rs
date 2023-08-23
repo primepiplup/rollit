@@ -1,8 +1,11 @@
 use dirs::home_dir;
+use parser::Args;
 use rand::{thread_rng, Rng};
 use std::env::args;
 use std::fs::read_to_string;
 use std::path::PathBuf;
+
+pub mod parser;
 
 fn main() {
     let args: Vec<String> = args().collect();
@@ -13,10 +16,10 @@ fn main() {
         println!("rollit [filename]");
     }
 
-    if arg_count > 1 {
-        let filepath = compose_filepath(&args[1]);
-        display_random_line_from_file(filepath);
-    }
+    let parsed_args = Args::parse(args);
+
+    let filepath = compose_filepath(&parsed_args.filename);
+    display_random_line_from_file(filepath);
 }
 
 fn compose_filepath(filename: &String) -> PathBuf {
