@@ -6,8 +6,9 @@ Essentially the program uses the first command line argument to look up a text f
 ## Usage
 
 Create a folder in your home directory at .local/share/rollit and fill it with named text files.
-An example file would be d6, filled with the numbers 1 - 6 each on a new line. Or a file yn with one line for yes, and another for no.
+An example file would be d6, filled with the numbers 1 - 6, each on a new line. Another example is a file yn with one line for yes, and another for no.
 This can be used for rolling on whatever list of lines you want however, so be creative!
+Note that folder paths are followed. If you create a .local/share/rollit/[folder]/[somefile] you can roll on that file using rollit [folder]/[somefile].
 
 ## Building and deploying
 
@@ -18,3 +19,4 @@ Run cargo build with the -r flag, you'll find an executable in the target/releas
 ## Limitations
 
 The current version will panic if the file does not exist, this is expected and okay, but not pretty.
+There are no checks for ../ in the parsing of the file location! This would theoretically enable any file with sufficient permission settings to be accessed by the rollit utility. For now until an appropriate check is implemented, be mindful that this can be done. 
