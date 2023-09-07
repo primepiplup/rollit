@@ -19,7 +19,11 @@ fn main() {
     let parsed_args = Args::parse(args);
 
     let filepath = compose_filepath(&parsed_args.filename);
-    display_random_line_from_file(filepath);
+    let mut counter: u16 = 0;
+    while counter < parsed_args.count {
+        display_random_line_from_file(&filepath);
+        counter = counter + 1;
+    }
 }
 
 fn compose_filepath(filename: &String) -> PathBuf {
@@ -29,7 +33,7 @@ fn compose_filepath(filename: &String) -> PathBuf {
     return filepath;
 }
 
-fn display_random_line_from_file(filepath: PathBuf) {
+fn display_random_line_from_file(filepath: &PathBuf) {
     let filecontent: String = read_to_string(filepath).expect("File not found.");
     let mut file_lines = filecontent.lines();
     let line_count = file_lines.clone().count();
