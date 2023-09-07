@@ -10,6 +10,15 @@ An example file would be d6, filled with the numbers 1 - 6, each on a new line. 
 This can be used for rolling on whatever list of lines you want however, so be creative!
 Note that folder paths are followed. If you create a .local/share/rollit/[folder]/[somefile] you can roll on that file using rollit [folder]/[somefile].
 
+### Command line arguments
+
+Support for command line arguments is very slowly trickling into the Rollit implementation. A basic setup has been written, which should be fairly easy to extend with additional behaviour. 
+
+#### Multiple rolls
+The --count X or --repeats X argument can be supplied to rollit before the file is given. This will cause said file to be rolled on X amount of times.
+
+`rollit --count [number] file`
+
 ## Building and deploying
 
 Clone this repo and read the source code, it's short.
