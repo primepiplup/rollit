@@ -1,6 +1,6 @@
 pub struct Args {
     pub filename: String,
-    pub count: u16,
+    pub count: usize,
 }
 
 impl Args {
@@ -12,11 +12,13 @@ impl Args {
             count: 1,
         };
 
-        if Self::is_argument(&args, arg_counter) {
-            basic_args = Self::set_argument(basic_args, args.clone(), arg_counter);
-        };
-
-        arg_counter = arg_counter + 2;
+        while arg_counter < args.len() {
+            if Self::is_argument(&args, arg_counter) {
+                arg_counter += basic_args.set_argument(&args, arg_counter);
+            } else {
+                arg_counter += 1;
+            }
+        }
 
         return basic_args;
     }
@@ -28,15 +30,34 @@ impl Args {
         return first_char == '-' && second_char == '-';
     }
 
-    fn set_argument(mut settings: Args, cli_arguments: Vec<String>, counter: usize) -> Args {
-        let mut selector = &cli_arguments[counter][2..];
+    fn set_argument(&mut self, cli_arguments: &Vec<String>, counter: usize) -> usize {
+        let selector = &cli_arguments[counter][2..];
 
-        let value: u16 = cli_arguments[counter + 1].parse().unwrap(); // write proper handling for this returning feedback to the user
+        match selector {
+            "count" => return self.set_count(cli_arguments, counter + 1),
+            "repeats" => return self.set_count(cli_arguments, counter + 1),
+            _ => return 1,
+        }
+    }
 
-        if selector == "count" || selector == "repeats" {
-            settings.count = value;
+    fn set_count(&mut self, cli_arguments: &Vec<String>, counter: usize) -> usize {
+        if counter >= cli_arguments.len() {
+            println!("No argument following the count flag...");
+            return 2;
         }
 
-        return settings;
+        let value = &cli_arguments[counter];
+
+        let count = match value.parse::<usize>() {
+            Ok(count) => count,
+            Err(_) => {
+                println!("Incorrect count value provided, defaulting to 1");
+                return 2;
+            }
+        };
+
+        self.count = count;
+
+        return 2;
     }
 }
