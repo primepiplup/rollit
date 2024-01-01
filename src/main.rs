@@ -14,21 +14,16 @@ fn main() {
     let arg_count = args.len();
 
     if arg_count <= 1 {
-        println!("Usage:");
-        println!("rollit [filename]\n");
-        println!("Available files: ");
-        let filenames = get_filenames();
-        for name in filenames {
-            println!(" - {}", name);
-        }
+        display_help();
         return ();
     }
 
     let parsed_args = Args::parse(args);
 
     let filepath = compose_filepath(&parsed_args.filename);
-    let mut counter: u16 = 0;
-    while counter < parsed_args.count {
+
+    let mut counter: usize = 0;
+    while &counter < &parsed_args.count {
         display_random_line_from_file(&filepath);
         counter = counter + 1;
     }
@@ -56,7 +51,13 @@ fn compose_filepath(filename: &String) -> PathBuf {
 }
 
 fn display_random_line_from_file(filepath: &PathBuf) {
-    let filecontent: String = read_to_string(filepath).expect("File not found.");
+    let filecontent: String = match read_to_string(filepath) {
+        Ok(file) => file,
+        Err(_) => {
+            println!("That file does not exist. Exiting.");
+            return ();
+        }
+    };
     let mut file_lines = filecontent.lines();
     let line_count = file_lines.clone().count();
     let selection_index = thread_rng().gen_range(0..line_count);
@@ -64,4 +65,14 @@ fn display_random_line_from_file(filepath: &PathBuf) {
         .nth(selection_index)
         .expect("Line not found at index.");
     println!("{}", selected_line);
+}
+
+fn display_help() {
+    println!("Usage:");
+    println!("rollit [filename]\n");
+    println!("Available files: ");
+    let filenames = get_filenames();
+    for name in filenames {
+        println!(" - {}", name);
+    }
 }
