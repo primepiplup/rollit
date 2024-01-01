@@ -2,10 +2,12 @@ use dirs::home_dir;
 use parser::Args;
 use rand::{thread_rng, Rng};
 use std::env::args;
-use std::fs::read_to_string;
+use std::fs::{read_dir, read_to_string};
 use std::path::PathBuf;
 
 pub mod parser;
+
+static ROLL_FILES: &str = ".local/share/rollit/";
 
 fn main() {
     let args: Vec<String> = args().collect();
@@ -13,7 +15,13 @@ fn main() {
 
     if arg_count <= 1 {
         println!("Usage:");
-        println!("rollit [filename]");
+        println!("rollit [filename]\n");
+        println!("Available files: ");
+        let filenames = get_filenames();
+        for name in filenames {
+            println!(" - {}", name);
+        }
+        return ();
     }
 
     let parsed_args = Args::parse(args);
@@ -26,9 +34,23 @@ fn main() {
     }
 }
 
-fn compose_filepath(filename: &String) -> PathBuf {
+fn get_roll_files_folder() -> PathBuf {
     let mut filepath = home_dir().expect("No home directory found.");
-    filepath.push(".local/share/rollit/");
+    filepath.push(ROLL_FILES);
+    return filepath;
+}
+
+fn get_filenames() -> Vec<String> {
+    let filepath = get_roll_files_folder();
+    let files = read_dir(filepath).unwrap();
+    files
+        .into_iter()
+        .map(|file| file.unwrap().path().to_str().unwrap().to_string())
+        .collect()
+}
+
+fn compose_filepath(filename: &String) -> PathBuf {
+    let mut filepath = get_roll_files_folder();
     filepath.push(filename);
     return filepath;
 }
